@@ -298,7 +298,7 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 16px;
     }
 
     .panel-title {
@@ -502,6 +502,15 @@
         <span class="captured-badge" id="capturedCountTag">進度: 0 / 5</span>
       </div>
 
+      <!-- Volume Control -->
+      <div class="control-group">
+        <div class="control-label">
+          <span>總音量 (Master Volume)</span>
+          <span class="control-value" id="masterVolVal">50 %</span>
+        </div>
+        <input type="range" id="masterVolSlider" min="0" max="100" step="5" value="50">
+      </div>
+
       <div class="control-group">
         <div class="control-label">
           <span>目標格子 (Multi-Targets)</span>
@@ -566,8 +575,7 @@
       let timerId = null;
 
       let playsCount = 0;
-      // Default Targets: 5, 7, 9, 11, 13 (0-indexed: 4, 6, 8, 10, 12)
-      let targetSet = new Set([4, 6, 8, 10, 12]);
+      let targetSet = new Set([4, 6, 8, 10, 12]); // 5, 7, 9, 11, 13
       let capturedSet = new Set();
 
       let baseSpeed = 30;
@@ -576,6 +584,9 @@
       let currentStepDelay = 30;
       let currentLapFactor = 0;
       let lastFrameTime = 0;
+
+      // Master Volume (Default: 0.5 / 50%)
+      let masterVolume = 0.5;
 
       const ringContainer = document.getElementById('ringContainer');
       const targetGrid = document.getElementById('targetGrid');
@@ -588,6 +599,8 @@
       const fluctAmpSlider = document.getElementById('fluctAmpSlider');
       const fluctAmpVal = document.getElementById('fluctAmpVal');
       const fluctPatternSelect = document.getElementById('fluctPatternSelect');
+      const masterVolSlider = document.getElementById('masterVolSlider');
+      const masterVolVal = document.getElementById('masterVolVal');
       const currentDelayVal = document.getElementById('currentDelayVal');
       const meterBarFill = document.getElementById('meterBarFill');
       const targetCountText = document.getElementById('targetCountText');
@@ -603,43 +616,45 @@
           audioCtx.resume();
         }
         const now = audioCtx.currentTime;
+        const gainNode = audioCtx.createGain();
+        gainNode.connect(audioCtx.destination);
 
         if (type === 'tick') {
           const osc = audioCtx.createOscillator();
-          const gain = audioCtx.createGain();
-          osc.connect(gain);
-          gain.connect(audioCtx.destination);
+          osc.connect(gainNode);
           osc.type = 'sine';
           osc.frequency.setValueAtTime(440, now);
           osc.frequency.exponentialRampToValueAtTime(880, now + 0.02);
-          gain.gain.setValueAtTime(0.08, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.02);
+          
+          gainNode.gain.setValueAtTime(0.25 * masterVolume, now);
+          gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.02);
+          
           osc.start(now);
           osc.stop(now + 0.02);
         } else if (type === 'win') {
           const osc = audioCtx.createOscillator();
-          const gain = audioCtx.createGain();
-          osc.connect(gain);
-          gain.connect(audioCtx.destination);
+          osc.connect(gainNode);
           osc.type = 'triangle';
           osc.frequency.setValueAtTime(523.25, now);
           osc.frequency.setValueAtTime(659.25, now + 0.08);
           osc.frequency.setValueAtTime(783.99, now + 0.16);
           osc.frequency.setValueAtTime(1046.50, now + 0.24);
-          gain.gain.setValueAtTime(0.2, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+          
+          gainNode.gain.setValueAtTime(0.4 * masterVolume, now);
+          gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+          
           osc.start(now);
           osc.stop(now + 0.5);
         } else if (type === 'miss') {
           const osc = audioCtx.createOscillator();
-          const gain = audioCtx.createGain();
-          osc.connect(gain);
-          gain.connect(audioCtx.destination);
+          osc.connect(gainNode);
           osc.type = 'sawtooth';
           osc.frequency.setValueAtTime(220, now);
           osc.frequency.linearRampToValueAtTime(110, now + 0.15);
-          gain.gain.setValueAtTime(0.15, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+          
+          gainNode.gain.setValueAtTime(0.3 * masterVolume, now);
+          gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+          
           osc.start(now);
           osc.stop(now + 0.15);
         }
@@ -663,7 +678,7 @@
           filter.type = 'lowpass';
           filter.frequency.setValueAtTime(600, nextNoteTime);
 
-          gain.gain.setValueAtTime(0.03, nextNoteTime);
+          gain.gain.setValueAtTime(0.12 * masterVolume, nextNoteTime);
           gain.gain.exponentialRampToValueAtTime(0.001, nextNoteTime + 0.1);
 
           osc.connect(filter);
@@ -678,7 +693,7 @@
             const hatGain = audioCtx.createGain();
             hatOsc.type = 'square';
             hatOsc.frequency.setValueAtTime(7000, nextNoteTime);
-            hatGain.gain.setValueAtTime(0.015, nextNoteTime);
+            hatGain.gain.setValueAtTime(0.06 * masterVolume, nextNoteTime);
             hatGain.gain.exponentialRampToValueAtTime(0.001, nextNoteTime + 0.03);
             hatOsc.connect(hatGain);
             hatGain.connect(audioCtx.destination);
@@ -928,17 +943,14 @@
         stopBGM();
         isRunning = false;
 
-        // Reset game state
         playsCount = 0;
         playsVal.textContent = '0';
         currentIndex = 0;
         capturedSet.clear();
 
-        // Reset targets back to default: 5, 7, 9, 11, 13
         targetSet.clear();
         [4, 6, 8, 10, 12].forEach(idx => targetSet.add(idx));
 
-        // Reset speed, amplitude, and patterns back to default
         baseSpeed = 30;
         baseSpeedSlider.value = 30;
         baseSpeedVal.textContent = '30 ms';
@@ -949,6 +961,10 @@
 
         fluctuationPattern = 'random';
         fluctPatternSelect.value = 'random';
+
+        masterVolume = 0.5;
+        masterVolSlider.value = 50;
+        masterVolVal.textContent = '50 %';
 
         currentStepDelay = 30;
         currentLapFactor = 0;
@@ -983,6 +999,11 @@
 
       fluctPatternSelect.addEventListener('change', (e) => {
         fluctuationPattern = e.target.value;
+      });
+
+      masterVolSlider.addEventListener('input', (e) => {
+        masterVolume = parseInt(e.target.value, 10) / 100.0;
+        masterVolVal.textContent = `${e.target.value} %`;
       });
 
       initRing();
