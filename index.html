@@ -42,7 +42,6 @@
       overflow-x: hidden;
     }
 
-    /* RWD Game Wrapper */
     .game-wrapper {
       display: flex;
       flex-direction: row;
@@ -53,7 +52,6 @@
       justify-content: center;
     }
 
-    /* Tablet and Mobile Layout: Stack vertically */
     @media (max-width: 900px) {
       .game-wrapper {
         flex-direction: column;
@@ -130,7 +128,6 @@
       color: var(--neon-gold);
     }
 
-    /* RWD Stage Container */
     .stage-container {
       position: relative;
       width: 100%;
@@ -150,17 +147,18 @@
       position: relative;
     }
 
+    /* Option A SVG Slice Styles */
     .wheel-slice {
       fill: rgba(20, 25, 42, 0.85);
-      stroke: rgba(0, 240, 255, 0.25);
+      stroke: rgba(0, 240, 255, 0.3);
       stroke-width: 1.5;
       cursor: pointer;
       touch-action: manipulation;
-      transition: fill 0.15s ease, filter 0.15s ease;
+      transition: fill 0.12s ease;
     }
 
     .wheel-slice:hover {
-      fill: rgba(0, 240, 255, 0.2);
+      fill: rgba(0, 240, 255, 0.25);
     }
 
     .wheel-slice.is-target {
@@ -179,18 +177,18 @@
       fill: var(--neon-pink) !important;
       stroke: #ffffff !important;
       stroke-width: 3 !important;
-      filter: drop-shadow(0 0 12px var(--neon-pink));
+      filter: drop-shadow(0 0 10px var(--neon-pink));
     }
 
     .wheel-slice.is-captured.is-active {
       fill: var(--neon-green) !important;
       stroke: #ffffff !important;
       stroke-width: 3 !important;
-      filter: drop-shadow(0 0 12px var(--neon-green));
+      filter: drop-shadow(0 0 10px var(--neon-green));
     }
 
     .slice-text {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 800;
       fill: #8a99ad;
       pointer-events: none;
@@ -502,12 +500,10 @@
       </div>
 
       <div class="stage-container">
-        <!-- Center Core Hub -->
         <div class="center-hub">
           <div class="center-hub-ring"></div>
         </div>
 
-        <!-- Wheel SVG Slices Container (Option A) -->
         <div class="wheel-svg-container">
           <svg id="wheelSvg" viewBox="0 0 360 360" width="100%" height="100%"></svg>
         </div>
@@ -531,7 +527,6 @@
         <span class="captured-badge" id="capturedCountTag">進度: 0 / 5</span>
       </div>
 
-      <!-- Master Volume Control -->
       <div class="control-group">
         <div class="control-label">
           <span>總音量 (Master Volume)</span>
@@ -540,66 +535,4 @@
         <input type="range" id="masterVolSlider" min="0" max="100" step="5" value="50">
       </div>
 
-      <!-- Target Grid Selection -->
-      <div class="control-group">
-        <div class="control-label">
-          <span>目標格子 (Multi-Targets)</span>
-          <span id="targetCountText" class="control-value">已選 5 格</span>
-        </div>
-        <div class="target-grid" id="targetGrid"></div>
-        
-        <div class="quick-preset-row">
-          <button class="preset-btn" onclick="setPresetTargets('default')">預設5格</button>
-          <button class="preset-btn" onclick="setPresetTargets('even')">雙數格</button>
-          <button class="preset-btn" onclick="setPresetTargets('odd')">單數格</button>
-          <button class="preset-btn" onclick="setPresetTargets('corners')">4角落</button>
-          <button class="preset-btn" onclick="setPresetTargets('all')">全選</button>
-          <button class="preset-btn btn-clear" onclick="setPresetTargets('none')">全部取消</button>
-        </div>
-      </div>
-
-      <!-- Base Speed Variable Slider (10ms to 40ms) -->
-      <div class="control-group">
-        <div class="control-label">
-          <span>基礎速度 (Base Speed)</span>
-          <span class="control-value" id="baseSpeedVal">30 ms</span>
-        </div>
-        <input type="range" id="baseSpeedSlider" min="10" max="40" step="1" value="30">
-      </div>
-
-      <!-- Fluctuation Amplitude Slider -->
-      <div class="control-group">
-        <div class="control-label">
-          <span>每圈波動振幅 (Lap Fluctuation Amp)</span>
-          <span class="control-value" id="fluctAmpVal">0 %</span>
-        </div>
-        <input type="range" id="fluctAmpSlider" min="0" max="100" step="5" value="0">
-      </div>
-
-      <!-- Real-Time Speed Meter -->
-      <div class="speed-meter-box">
-        <div class="meter-label" style="display:flex; justify-content:space-between;">
-          <span>當前圈轉速 (Lap Step Delay)</span>
-          <span id="currentDelayVal" style="color:var(--neon-cyan); font-weight:bold;">30 ms</span>
-        </div>
-        <div class="meter-bar-bg">
-          <div class="meter-bar-fill" id="meterBarFill"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const TOTAL_CELLS = 16;
-      let currentIndex = 0;
-      let isRunning = false;
-      let timerId = null;
-
-      let playsCount = 0;
-      // Default Targets: Cells 5, 7, 9, 11, 13 (0-indexed: 4, 6, 8, 10, 12)
-      let targetSet = new Set([4, 6, 8, 10, 12]);
-      let capturedSet = new Set();
-
-      let baseSpeed = 30;           // Range: 10ms to 40ms (Default: 30ms)
-      let fluctuationAmp = 0;       // Range: 0% to 1
+      <div
