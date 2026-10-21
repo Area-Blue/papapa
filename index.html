@@ -270,4 +270,788 @@
 
     .btn-stop {
       background: linear-gradient(135deg, #ff0055, #ff007f);
-      color
+      color: #fff;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+      border: 1px solid #ff66a3;
+    }
+
+    .btn-stop:hover:not(:disabled) {
+      box-shadow: 0 0 20px rgba(255, 0, 127, 0.6), 0 5px 0 rgba(0,0,0,0.5);
+    }
+
+    .btn-continue {
+      background: linear-gradient(135deg, #00b894, #00f0ff);
+      color: #051b11;
+      border: 1px solid #55ffff;
+    }
+
+    .btn-continue:hover:not(:disabled) {
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.6), 0 5px 0 rgba(0,0,0,0.5);
+    }
+
+    .btn-reset {
+      background: linear-gradient(135deg, #34495e, #2c3e50);
+      color: #ecf0f1;
+      border: 1px solid #7f8c8d;
+    }
+
+    .btn-reset:hover {
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.2), 0 5px 0 rgba(0,0,0,0.5);
+    }
+
+    .settings-panel {
+      background: var(--panel-bg);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 20px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .panel-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--neon-cyan);
+      border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+      padding-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .control-label {
+      font-size: 11px;
+      color: #a0aec0;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .control-value {
+      color: var(--neon-gold);
+      font-weight: bold;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--neon-cyan);
+      cursor: pointer;
+      height: 6px;
+    }
+
+    .target-grid {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 4px;
+      margin-top: 4px;
+    }
+
+    .target-btn {
+      aspect-ratio: 1;
+      background: #1a2035;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #a0aec0;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: bold;
+      cursor: pointer;
+      touch-action: manipulation;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+
+    .target-btn.selected {
+      background: var(--neon-gold);
+      color: #000;
+      border-color: #fff;
+    }
+
+    .quick-preset-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
+      margin-top: 5px;
+    }
+
+    .preset-btn {
+      padding: 6px 0;
+      background: #1e2640;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #00f0ff;
+      border-radius: 6px;
+      font-size: 10px;
+      cursor: pointer;
+      touch-action: manipulation;
+      font-weight: 600;
+      transition: background 0.15s;
+    }
+
+    .preset-btn:hover {
+      background: rgba(0, 240, 255, 0.2);
+    }
+
+    .preset-btn.btn-clear {
+      color: #ff4757;
+      border-color: rgba(255, 71, 87, 0.3);
+    }
+
+    .preset-btn.btn-clear:hover {
+      background: rgba(255, 71, 87, 0.2);
+    }
+
+    .speed-meter-box {
+      background: rgba(0,0,0,0.4);
+      border-radius: 8px;
+      padding: 8px 12px;
+      border: 1px solid rgba(0, 240, 255, 0.15);
+    }
+
+    .meter-label {
+      font-size: 10px;
+      color: #8a99ad;
+      margin-bottom: 3px;
+    }
+
+    .meter-bar-bg {
+      height: 6px;
+      background: #1e2638;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .meter-bar-fill {
+      height: 100%;
+      width: 50%;
+      background: linear-gradient(90deg, var(--neon-green), var(--neon-gold), var(--neon-pink));
+      transition: width 0.05s linear;
+    }
+
+    .status-banner {
+      width: 100%;
+      padding: 8px 12px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: bold;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #e2e8f0;
+      min-height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .status-banner.win {
+      background: rgba(0, 255, 102, 0.15);
+      border-color: var(--neon-green);
+      color: var(--neon-green);
+    }
+
+    .status-banner.miss {
+      background: rgba(255, 0, 127, 0.15);
+      border-color: var(--neon-pink);
+      color: #ff99c8;
+    }
+
+    .status-banner.warning {
+      background: rgba(255, 165, 0, 0.15);
+      border-color: #ffa500;
+      color: #ffbe76;
+    }
+
+    .captured-badge {
+      font-size: 10px;
+      color: var(--neon-green);
+      font-weight: bold;
+      background: rgba(0, 255, 102, 0.15);
+      padding: 2px 5px;
+      border-radius: 4px;
+      border: 1px solid rgba(0, 255, 102, 0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="game-wrapper">
+    <div class="arcade-machine">
+      <div class="machine-header">
+        <div class="machine-title">Cyber Arcade Roulette</div>
+        <div class="machine-subtitle">點擊「START」解鎖音效並開始挑戰</div>
+      </div>
+
+      <div class="stats-bar">
+        <div class="stat-box">
+          <div class="stat-label">累積遊玩次數</div>
+          <div class="stat-value" id="playsVal">0</div>
+        </div>
+      </div>
+
+      <div class="stage-container">
+        <div class="center-hub">
+          <div class="center-hub-ring"></div>
+        </div>
+
+        <div class="wheel-svg-container">
+          <svg id="wheelSvg" viewBox="0 0 360 360" width="100%" height="100%"></svg>
+        </div>
+      </div>
+
+      <div class="status-banner" id="statusBanner">
+        點擊 START 按鈕或按下空白鍵 (Space) 開始遊戲！
+      </div>
+
+      <div style="height: 12px;"></div>
+
+      <div class="arcade-controls">
+        <button class="btn-action btn-continue" id="stopBtn">START !</button>
+        <button class="btn-action btn-reset" id="resetBtn">RESET (重置)</button>
+      </div>
+    </div>
+
+    <div class="settings-panel">
+      <div class="panel-title">
+        <span>控制與參數面板</span>
+        <span class="captured-badge" id="capturedCountTag">進度: 0 / 5</span>
+      </div>
+
+      <div class="control-group">
+        <div class="control-label">
+          <span>總音量 (Master Volume)</span>
+          <span class="control-value" id="masterVolVal">50 %</span>
+        </div>
+        <input type="range" id="masterVolSlider" min="0" max="100" step="5" value="50">
+      </div>
+
+      <div class="control-group">
+        <div class="control-label">
+          <span>目標格子 (Multi-Targets)</span>
+          <span id="targetCountText" class="control-value">已選 5 格</span>
+        </div>
+        <div class="target-grid" id="targetGrid"></div>
+        
+        <div class="quick-preset-row">
+          <button class="preset-btn" id="presetDefault">預設5格</button>
+          <button class="preset-btn" id="presetEven">雙數格</button>
+          <button class="preset-btn" id="presetOdd">單數格</button>
+          <button class="preset-btn" id="presetCorners">4角落</button>
+          <button class="preset-btn" id="presetAll">全選</button>
+          <button class="preset-btn btn-clear" id="presetNone">全部取消</button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <div class="control-label">
+          <span>基礎速度 (Base Speed)</span>
+          <span class="control-value" id="baseSpeedVal">30 ms</span>
+        </div>
+        <input type="range" id="baseSpeedSlider" min="10" max="40" step="1" value="30">
+      </div>
+
+      <div class="control-group">
+        <div class="control-label">
+          <span>每圈波動振幅 (Lap Fluctuation Amp)</span>
+          <span class="control-value" id="fluctAmpVal">0 %</span>
+        </div>
+        <input type="range" id="fluctAmpSlider" min="0" max="100" step="5" value="0">
+      </div>
+
+      <div class="speed-meter-box">
+        <div class="meter-label" style="display:flex; justify-content:space-between;">
+          <span>當前圈轉速 (Lap Step Delay)</span>
+          <span id="currentDelayVal" style="color:var(--neon-cyan); font-weight:bold;">30 ms</span>
+        </div>
+        <div class="meter-bar-bg">
+          <div class="meter-bar-fill" id="meterBarFill"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const TOTAL_CELLS = 16;
+      let currentIndex = 0;
+      let isRunning = false;
+      let timerId = null;
+
+      let playsCount = 0;
+      let targetSet = new Set([4, 6, 8, 10, 12]);
+      let capturedSet = new Set();
+
+      let baseSpeed = 30;
+      let fluctuationAmp = 0;
+      let currentStepDelay = 30;
+      let currentLapFactor = 0;
+      let lastFrameTime = 0;
+
+      let masterVolume = 0.5;
+
+      const wheelSvg = document.getElementById('wheelSvg');
+      const targetGrid = document.getElementById('targetGrid');
+      const stopBtn = document.getElementById('stopBtn');
+      const resetBtn = document.getElementById('resetBtn');
+      const statusBanner = document.getElementById('statusBanner');
+      const playsVal = document.getElementById('playsVal');
+      const baseSpeedSlider = document.getElementById('baseSpeedSlider');
+      const baseSpeedVal = document.getElementById('baseSpeedVal');
+      const fluctAmpSlider = document.getElementById('fluctAmpSlider');
+      const fluctAmpVal = document.getElementById('fluctAmpVal');
+      const masterVolSlider = document.getElementById('masterVolSlider');
+      const masterVolVal = document.getElementById('masterVolVal');
+      const currentDelayVal = document.getElementById('currentDelayVal');
+      const meterBarFill = document.getElementById('meterBarFill');
+      const targetCountText = document.getElementById('targetCountText');
+      const capturedCountTag = document.getElementById('capturedCountTag');
+
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      let bgmStepIndex = 0;
+      let nextNoteTime = 0;
+      let bgmTimerId = null;
+
+      function playSound(type) {
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        const now = audioCtx.currentTime;
+        const gainNode = audioCtx.createGain();
+        gainNode.connect(audioCtx.destination);
+
+        if (type === 'tick') {
+          const osc = audioCtx.createOscillator();
+          osc.connect(gainNode);
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(440, now);
+          osc.frequency.exponentialRampToValueAtTime(880, now + 0.02);
+          
+          gainNode.gain.setValueAtTime(0.25 * masterVolume, now);
+          gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.02);
+          
+          osc.start(now);
+          osc.stop(now + 0.02);
+        } else if (type === 'win') {
+          const osc = audioCtx.createOscillator();
+          osc.connect(gainNode);
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(523.25, now);
+          osc.frequency.setValueAtTime(659.25, now + 0.08);
+          osc.frequency.setValueAtTime(783.99, now + 0.16);
+          osc.frequency.setValueAtTime(1046.50, now + 0.24);
+          
+          gainNode.gain.setValueAtTime(0.4 * masterVolume, now);
+          gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+          
+          osc.start(now);
+          osc.stop(now + 0.5);
+        } else if (type === 'miss') {
+          const osc = audioCtx.createOscillator();
+          osc.connect(gainNode);
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.linearRampToValueAtTime(110, now + 0.15);
+          
+          gainNode.gain.setValueAtTime(0.3 * masterVolume, now);
+          gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+          
+          osc.start(now);
+          osc.stop(now + 0.15);
+        }
+      }
+
+      function scheduleBGM() {
+        if (!isRunning) return;
+        const now = audioCtx.currentTime;
+
+        if (nextNoteTime <= now + 0.1) {
+          const bassNotes = [110, 110, 130.81, 110, 146.83, 110, 130.81, 98.00];
+          const freq = bassNotes[bgmStepIndex % bassNotes.length];
+
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          const filter = audioCtx.createBiquadFilter();
+
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(freq, nextNoteTime);
+
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(600, nextNoteTime);
+
+          gain.gain.setValueAtTime(0.12 * masterVolume, nextNoteTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, nextNoteTime + 0.1);
+
+          osc.connect(filter);
+          filter.connect(gain);
+          gain.connect(audioCtx.destination);
+
+          osc.start(nextNoteTime);
+          osc.stop(nextNoteTime + 0.1);
+
+          if (bgmStepIndex % 2 === 1) {
+            const hatOsc = audioCtx.createOscillator();
+            const hatGain = audioCtx.createGain();
+            hatOsc.type = 'square';
+            hatOsc.frequency.setValueAtTime(7000, nextNoteTime);
+            hatGain.gain.setValueAtTime(0.06 * masterVolume, nextNoteTime);
+            hatGain.gain.exponentialRampToValueAtTime(0.001, nextNoteTime + 0.03);
+            hatOsc.connect(hatGain);
+            hatGain.connect(audioCtx.destination);
+            hatOsc.start(nextNoteTime);
+            hatOsc.stop(nextNoteTime + 0.03);
+          }
+
+          nextNoteTime += 0.12;
+          bgmStepIndex++;
+        }
+
+        bgmTimerId = setTimeout(scheduleBGM, 25);
+      }
+
+      function startBGM() {
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        bgmStepIndex = 0;
+        nextNoteTime = audioCtx.currentTime;
+        scheduleBGM();
+      }
+
+      function stopBGM() {
+        if (bgmTimerId) {
+          clearTimeout(bgmTimerId);
+          bgmTimerId = null;
+        }
+      }
+
+      function initTargetGridUI() {
+        targetGrid.innerHTML = '';
+        for (let i = 0; i < TOTAL_CELLS; i++) {
+          const btn = document.createElement('button');
+          btn.className = 'target-btn';
+          btn.textContent = i + 1;
+          btn.id = `target-grid-btn-${i}`;
+          btn.addEventListener('click', (e) => { e.preventDefault(); toggleTarget(i); });
+          targetGrid.appendChild(btn);
+        }
+      }
+
+      function initWheelSvg() {
+        wheelSvg.innerHTML = '';
+        const cx = 180, cy = 180;
+        const outerR = 175;
+        const innerR = 60;
+        const angleStep = 360 / TOTAL_CELLS;
+
+        for (let i = 0; i < TOTAL_CELLS; i++) {
+          const startAngle = i * angleStep - 90;
+          const endAngle = (i + 1) * angleStep - 90;
+
+          const startRad = (startAngle * Math.PI) / 180;
+          const endRad = (endAngle * Math.PI) / 180;
+
+          const x1 = cx + outerR * Math.cos(startRad);
+          const y1 = cy + outerR * Math.sin(startRad);
+          const x2 = cx + outerR * Math.cos(endRad);
+          const y2 = cy + outerR * Math.sin(endRad);
+
+          const x3 = cx + innerR * Math.cos(endRad);
+          const y3 = cy + innerR * Math.sin(endRad);
+          const x4 = cx + innerR * Math.cos(startRad);
+          const y4 = cy + innerR * Math.sin(startRad);
+
+          const pathData = `M ${x1.toFixed(2)} ${y1.toFixed(2)} A ${outerR} ${outerR} 0 0 1 ${x2.toFixed(2)} ${y2.toFixed(2)} L ${x3.toFixed(2)} ${y3.toFixed(2)} A ${innerR} ${innerR} 0 0 0 ${x4.toFixed(2)} ${y4.toFixed(2)} Z`;
+
+          const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          path.setAttribute('d', pathData);
+          path.setAttribute('class', 'wheel-slice');
+          path.setAttribute('id', `slice-${i}`);
+          
+          path.addEventListener('click', (e) => { e.preventDefault(); toggleTarget(i); });
+
+          const midAngle = (startAngle + endAngle) / 2;
+          const midRad = (midAngle * Math.PI) / 180;
+          const textR = (outerR + innerR) / 2;
+          const tx = cx + textR * Math.cos(midRad);
+          const ty = cy + textR * Math.sin(midRad);
+
+          const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          text.setAttribute('x', tx.toFixed(2));
+          text.setAttribute('y', ty.toFixed(2));
+          text.setAttribute('text-anchor', 'middle');
+          text.setAttribute('dominant-baseline', 'central');
+          text.setAttribute('class', 'slice-text');
+          text.setAttribute('id', `slice-text-${i}`);
+          text.textContent = i + 1;
+
+          wheelSvg.appendChild(path);
+          wheelSvg.appendChild(text);
+        }
+
+        updateWheelVisuals();
+      }
+
+      function toggleTarget(index) {
+        if (targetSet.has(index)) {
+          targetSet.delete(index);
+          capturedSet.delete(index);
+        } else {
+          targetSet.add(index);
+        }
+        updateWheelVisuals();
+      }
+
+      function setPresetTargets(type) {
+        targetSet.clear();
+        capturedSet.clear();
+        if (type === 'default') {
+          [4, 6, 8, 10, 12].forEach(idx => targetSet.add(idx));
+        } else if (type === 'even') {
+          for (let i = 1; i < TOTAL_CELLS; i += 2) targetSet.add(i);
+        } else if (type === 'odd') {
+          for (let i = 0; i < TOTAL_CELLS; i += 2) targetSet.add(i);
+        } else if (type === 'corners') {
+          [0, 4, 8, 12].forEach(idx => targetSet.add(idx));
+        } else if (type === 'all') {
+          for (let i = 0; i < TOTAL_CELLS; i++) targetSet.add(i);
+        } else if (type === 'none') {
+          // Clear all targets
+        }
+        updateWheelVisuals();
+      }
+
+      function updateWheelVisuals() {
+        for (let i = 0; i < TOTAL_CELLS; i++) {
+          const slice = document.getElementById(`slice-${i}`);
+          const text = document.getElementById(`slice-text-${i}`);
+          const gridBtn = document.getElementById(`target-grid-btn-${i}`);
+
+          if (!slice || !text) continue;
+
+          slice.setAttribute('class', 'wheel-slice');
+          text.setAttribute('class', 'slice-text');
+          if (gridBtn) gridBtn.classList.remove('selected');
+
+          let label = `${i + 1}`;
+
+          if (targetSet.has(i)) {
+            slice.classList.add('is-target');
+            text.classList.add('is-target');
+            if (gridBtn) gridBtn.classList.add('selected');
+            label = `${i + 1}🎯`;
+          }
+
+          if (capturedSet.has(i)) {
+            slice.classList.add('is-captured');
+            text.classList.add('is-captured');
+            label = `${i + 1}✓`;
+          }
+
+          if (i === currentIndex) {
+            slice.classList.add('is-active');
+            text.classList.add('is-active');
+          }
+
+          text.textContent = label;
+        }
+
+        targetCountText.textContent = `已選 ${targetSet.size} 格`;
+        capturedCountTag.textContent = `進度: ${capturedSet.size} / ${targetSet.size}`;
+
+        if (targetSet.size === 0) {
+          stopBtn.disabled = true;
+          if (!isRunning) {
+            statusBanner.className = 'status-banner warning';
+            statusBanner.textContent = '⚠️ 請至少選擇 1 個目標格子才可開始遊戲！';
+          }
+        } else {
+          stopBtn.disabled = false;
+          if (!isRunning && statusBanner.classList.contains('warning')) {
+            statusBanner.className = 'status-banner';
+            statusBanner.textContent = '點擊 START 按鈕或按下空白鍵 (Space) 開始遊戲！';
+          }
+        }
+      }
+
+      function calculateNextDelay() {
+        if (fluctuationAmp === 0) {
+          return baseSpeed;
+        }
+
+        if (currentIndex === 0 || currentLapFactor === 0) {
+          currentLapFactor = (Math.random() * 2.0) - 1.0; 
+        }
+
+        const ampFactor = fluctuationAmp / 100.0;
+        let calculatedDelay = baseSpeed * (1 + currentLapFactor * ampFactor);
+        
+        return Math.max(5, Math.round(calculatedDelay));
+      }
+
+      function gameLoop(timestamp) {
+        if (!isRunning) return;
+
+        if (!lastFrameTime) lastFrameTime = timestamp;
+        const elapsed = timestamp - lastFrameTime;
+
+        if (elapsed >= currentStepDelay) {
+          currentIndex = (currentIndex + 1) % TOTAL_CELLS;
+          playSound('tick');
+
+          currentStepDelay = calculateNextDelay();
+          updateWheelVisuals();
+          updateSpeedMeterUI();
+
+          lastFrameTime = timestamp;
+        }
+
+        timerId = requestAnimationFrame(gameLoop);
+      }
+
+      function updateSpeedMeterUI() {
+        currentDelayVal.textContent = `${currentStepDelay} ms`;
+        const barPercent = Math.min(100, Math.max(5, ((currentStepDelay - 10) / 30) * 100));
+        meterBarFill.style.width = `${barPercent}%`;
+      }
+
+      function stopRoulette() {
+        if (targetSet.size === 0) return;
+
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+
+        if (!isRunning) {
+          isRunning = true;
+          stopBtn.textContent = 'STOP !';
+          stopBtn.className = 'btn-action btn-stop';
+          statusBanner.className = 'status-banner';
+          statusBanner.textContent = '轉動中... 隨時點擊 STOP 按鈕！';
+          startBGM();
+          lastFrameTime = 0;
+          timerId = requestAnimationFrame(gameLoop);
+          return;
+        }
+
+        cancelAnimationFrame(timerId);
+        stopBGM();
+        isRunning = false;
+
+        playsCount++;
+        playsVal.textContent = playsCount;
+
+        stopBtn.textContent = 'CONTINUE (繼續)';
+        stopBtn.className = 'btn-action btn-continue';
+
+        evaluateHitResult();
+      }
+
+      function evaluateHitResult() {
+        const isTargetHit = targetSet.has(currentIndex);
+
+        if (isTargetHit) {
+          capturedSet.add(currentIndex);
+          playSound('win');
+          updateWheelVisuals();
+
+          if (capturedSet.size === targetSet.size) {
+            statusBanner.className = 'status-banner win';
+            statusBanner.textContent = `🎉 太厲害了！已擊中所有 ${targetSet.size} 個目標格子！`;
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+          } else {
+            statusBanner.className = 'status-banner win';
+            statusBanner.textContent = `🎯 成功踩中第 ${currentIndex + 1} 格！(進度: ${capturedSet.size}/${targetSet.size})`;
+            confetti({ particleCount: 40, spread: 50, origin: { y: 0.7 } });
+          }
+        } else {
+          playSound('miss');
+          statusBanner.className = 'status-banner miss';
+          statusBanner.textContent = `❌ 停在第 ${currentIndex + 1} 格 (未命中目標)，再試一次！`;
+        }
+      }
+
+      function resetGameSettings() {
+        cancelAnimationFrame(timerId);
+        stopBGM();
+        isRunning = false;
+
+        playsCount = 0;
+        playsVal.textContent = '0';
+        currentIndex = 0;
+        capturedSet.clear();
+
+        targetSet.clear();
+        [4, 6, 8, 10, 12].forEach(idx => targetSet.add(idx));
+
+        baseSpeed = 30;
+        baseSpeedSlider.value = 30;
+        baseSpeedVal.textContent = '30 ms';
+
+        fluctuationAmp = 0;
+        fluctAmpSlider.value = 0;
+        fluctAmpVal.textContent = '0 %';
+
+        masterVolume = 0.5;
+        masterVolSlider.value = 50;
+        masterVolVal.textContent = '50 %';
+
+        currentStepDelay = 30;
+        currentLapFactor = 0;
+
+        stopBtn.textContent = 'START !';
+        stopBtn.className = 'btn-action btn-continue';
+
+        initWheelSvg();
+        statusBanner.className = 'status-banner';
+        statusBanner.textContent = '已重置所有參數與目標！點擊 START 開始遊戲！';
+      }
+
+      // Bind Preset Buttons Safely
+      document.getElementById('presetDefault').addEventListener('click', () => setPresetTargets('default'));
+      document.getElementById('presetEven').addEventListener('click', () => setPresetTargets('even'));
+      document.getElementById('presetOdd').addEventListener('click', () => setPresetTargets('odd'));
+      document.getElementById('presetCorners').addEventListener('click', () => setPresetTargets('corners'));
+      document.getElementById('presetAll').addEventListener('click', () => setPresetTargets('all'));
+      document.getElementById('presetNone').addEventListener('click', () => setPresetTargets('none'));
+
+      stopBtn.addEventListener('click', stopRoulette);
+      resetBtn.addEventListener('click', resetGameSettings);
+
+      window.addEventListener('keydown', (e) => {
+        if ((e.code === 'Space' || e.code === 'Enter') && targetSet.size > 0) {
+          e.preventDefault();
+          stopRoulette();
+        }
+      });
+
+      baseSpeedSlider.addEventListener('input', (e) => {
+        baseSpeed = parseInt(e.target.value, 10);
+        baseSpeedVal.textContent = `${baseSpeed} ms`;
+      });
+
+      fluctAmpSlider.addEventListener('input', (e) => {
+        fluctuationAmp = parseInt(e.target.value, 10);
+        fluctAmpVal.textContent = `${fluctuationAmp} %`;
+      });
+
+      masterVolSlider.addEventListener('input', (e) => {
+        masterVolume = parseInt(e.target.value, 10) / 100.0;
+        masterVolVal.textContent = `${e.target.value} %`;
+      });
+
+      // Initialize UI Elements
+      initTargetGridUI();
+      initWheelSvg();
+    });
+  </script>
+</body>
+</html>
