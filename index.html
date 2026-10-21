@@ -147,7 +147,6 @@
       position: relative;
     }
 
-    /* Option A SVG Slice Styles */
     .wheel-slice {
       fill: rgba(20, 25, 42, 0.85);
       stroke: rgba(0, 240, 255, 0.3);
@@ -512,27 +511,3 @@
       <div class="status-banner" id="statusBanner">
         點擊 START 按鈕或按下空白鍵 (Space) 開始遊戲！
       </div>
-
-      <div style="height: 12px;"></div>
-
-      <div class="arcade-controls">
-        <button class="btn-action btn-continue" id="stopBtn">START !</button>
-        <button class="btn-action btn-reset" id="resetBtn">RESET (重置)</button>
-      </div>
-    </div>
-
-    <div class="settings-panel">
-      <div class="panel-title">
-        <span>控制與參數面板</span>
-        <span class="captured-badge" id="capturedCountTag">進度: 0 / 5</span>
-      </div>
-
-      <div class="control-group">
-        <div class="control-label">
-          <span>總音量 (Master Volume)</span>
-          <span class="control-value" id="masterVolVal">50 %</span>
-        </div>
-        <input type="range" id="masterVolSlider" min="0" max="100" step="5" value="50">
-      </div>
-
-      <div
