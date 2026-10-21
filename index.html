@@ -253,9 +253,16 @@
       min-width: 0;
     }
 
-    .btn-action:active {
+    .btn-action:active:not(:disabled) {
       top: 4px;
       box-shadow: 0 2px 0 rgba(0,0,0,0.5);
+    }
+
+    .btn-action:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      box-shadow: none;
+      filter: grayscale(0.8);
     }
 
     .btn-stop {
@@ -265,7 +272,7 @@
       border: 1px solid #ff66a3;
     }
 
-    .btn-stop:hover {
+    .btn-stop:hover:not(:disabled) {
       box-shadow: 0 0 20px rgba(255, 0, 127, 0.6), 0 6px 0 rgba(0,0,0,0.5);
     }
 
@@ -275,7 +282,7 @@
       border: 1px solid #55ffff;
     }
 
-    .btn-continue:hover {
+    .btn-continue:hover:not(:disabled) {
       box-shadow: 0 0 20px rgba(0, 240, 255, 0.6), 0 6px 0 rgba(0,0,0,0.5);
     }
 
@@ -365,13 +372,13 @@
     }
 
     .quick-preset-row {
-      display: flex;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
       gap: 6px;
       margin-top: 6px;
     }
 
     .preset-btn {
-      flex: 1;
       padding: 6px 0;
       background: #1e2640;
       border: 1px solid rgba(255, 255, 255, 0.1);
@@ -385,6 +392,15 @@
 
     .preset-btn:hover {
       background: rgba(0, 240, 255, 0.2);
+    }
+
+    .preset-btn.btn-clear {
+      color: #ff4757;
+      border-color: rgba(255, 71, 87, 0.3);
+    }
+
+    .preset-btn.btn-clear:hover {
+      background: rgba(255, 71, 87, 0.2);
     }
 
     .speed-meter-box {
@@ -440,6 +456,12 @@
       background: rgba(255, 0, 127, 0.15);
       border-color: var(--neon-pink);
       color: #ff99c8;
+    }
+
+    .status-banner.warning {
+      background: rgba(255, 165, 0, 0.15);
+      border-color: #ffa500;
+      color: #ffbe76;
     }
 
     .captured-badge {
@@ -508,12 +530,15 @@
           <span id="targetCountText" class="control-value">已選 5 格</span>
         </div>
         <div class="target-grid" id="targetGrid"></div>
+        
+        <!-- Preset Row with Clear All Included -->
         <div class="quick-preset-row">
           <button class="preset-btn" onclick="setPresetTargets('default')">預設5格</button>
           <button class="preset-btn" onclick="setPresetTargets('even')">雙數格</button>
           <button class="preset-btn" onclick="setPresetTargets('odd')">單數格</button>
           <button class="preset-btn" onclick="setPresetTargets('corners')">4角落</button>
           <button class="preset-btn" onclick="setPresetTargets('all')">全選</button>
+          <button class="preset-btn btn-clear" onclick="setPresetTargets('none')">全部取消</button>
         </div>
       </div>
 
@@ -693,4 +718,294 @@
         }
         bgmStepIndex = 0;
         nextNoteTime = audioCtx.currentTime;
-        scheduleBGM
+        scheduleBGM();
+      }
+
+      function stopBGM() {
+        if (bgmTimerId) {
+          clearTimeout(bgmTimerId);
+          bgmTimerId = null;
+        }
+      }
+
+      function initRing() {
+        ringContainer.innerHTML = '';
+        const radius = 150;
+        const centerX = 180;
+        const centerY = 180;
+
+        for (let i = 0; i < TOTAL_CELLS; i++) {
+          const block = document.createElement('div');
+          block.className = 'ring-block';
+          block.dataset.index = i;
+
+          const angle = (i * (360 / TOTAL_CELLS) - 90) * (Math.PI / 180);
+          const x = centerX + radius * Math.cos(angle);
+          const y = centerY + radius * Math.sin(angle);
+
+          block.style.left = `${x}px`;
+          block.style.top = `${y}px`;
+
+          block.innerHTML = `
+            <span class="block-num">${i + 1}</span>
+            <span class="status-icon" id="icon-${i}"></span>
+          `;
+
+          block.addEventListener('click', () => toggleTarget(i));
+          ringContainer.appendChild(block);
+        }
+
+        initTargetGridUI();
+        updateRingVisuals();
+      }
+
+      function initTargetGridUI() {
+        targetGrid.innerHTML = '';
+        for (let i = 0; i < TOTAL_CELLS; i++) {
+          const btn = document.createElement('button');
+          btn.className = 'target-btn';
+          btn.textContent = i + 1;
+          btn.id = `target-grid-btn-${i}`;
+          btn.addEventListener('click', () => toggleTarget(i));
+          targetGrid.appendChild(btn);
+        }
+      }
+
+      function toggleTarget(index) {
+        if (targetSet.has(index)) {
+          targetSet.delete(index);
+          capturedSet.delete(index);
+        } else {
+          targetSet.add(index);
+        }
+        updateRingVisuals();
+      }
+
+      window.setPresetTargets = function(type) {
+        targetSet.clear();
+        capturedSet.clear();
+        if (type === 'default') {
+          [4, 6, 8, 10, 12].forEach(idx => targetSet.add(idx)); // 5, 7, 9, 11, 13
+        } else if (type === 'even') {
+          for (let i = 1; i < TOTAL_CELLS; i += 2) targetSet.add(i);
+        } else if (type === 'odd') {
+          for (let i = 0; i < TOTAL_CELLS; i += 2) targetSet.add(i);
+        } else if (type === 'corners') {
+          [0, 4, 8, 12].forEach(idx => targetSet.add(idx));
+        } else if (type === 'all') {
+          for (let i = 0; i < TOTAL_CELLS; i++) targetSet.add(i);
+        } else if (type === 'none') {
+          // Clear all targets
+        }
+        updateRingVisuals();
+      };
+
+      function updateRingVisuals() {
+        const blocks = document.querySelectorAll('.ring-block');
+        blocks.forEach((block, idx) => {
+          const iconSpan = document.getElementById(`icon-${idx}`);
+          const gridBtn = document.getElementById(`target-grid-btn-${idx}`);
+
+          block.classList.remove('is-target', 'is-active', 'is-captured');
+          if (gridBtn) gridBtn.classList.remove('selected');
+
+          if (targetSet.has(idx)) {
+            block.classList.add('is-target');
+            if (gridBtn) gridBtn.classList.add('selected');
+            iconSpan.textContent = '🎯';
+          } else {
+            iconSpan.textContent = '';
+          }
+
+          if (capturedSet.has(idx)) {
+            block.classList.add('is-captured');
+            iconSpan.textContent = '✓';
+          }
+
+          if (idx === currentIndex) {
+            block.classList.add('is-active');
+          }
+        });
+
+        targetCountText.textContent = `已選 ${targetSet.size} 格`;
+        capturedCountTag.textContent = `進度: ${capturedSet.size} / ${targetSet.size}`;
+
+        // Validation Check: At least 1 target must be selected to play
+        if (targetSet.size === 0) {
+          stopBtn.disabled = true;
+          if (!isRunning) {
+            statusBanner.className = 'status-banner warning';
+            statusBanner.textContent = '⚠️ 請至少選擇 1 個目標格子才可開始遊戲！';
+          }
+        } else {
+          stopBtn.disabled = false;
+          if (!isRunning && statusBanner.classList.contains('warning')) {
+            statusBanner.className = 'status-banner';
+            statusBanner.textContent = '點擊 START 按鈕或按下空白鍵 (Space) 開始遊戲！';
+          }
+        }
+      }
+
+      function calculateNextDelay() {
+        if (fluctuationAmp === 0) {
+          return baseSpeed;
+        }
+
+        if (currentIndex === 0 || currentLapFactor === 0) {
+          currentLapFactor = (Math.random() * 2.0) - 1.0; 
+        }
+
+        const ampFactor = fluctuationAmp / 100.0;
+        let calculatedDelay = baseSpeed * (1 + currentLapFactor * ampFactor);
+        
+        return Math.max(5, Math.round(calculatedDelay));
+      }
+
+      function gameLoop(timestamp) {
+        if (!isRunning) return;
+
+        if (!lastFrameTime) lastFrameTime = timestamp;
+        const elapsed = timestamp - lastFrameTime;
+
+        if (elapsed >= currentStepDelay) {
+          currentIndex = (currentIndex + 1) % TOTAL_CELLS;
+          playSound('tick');
+
+          currentStepDelay = calculateNextDelay();
+          updateRingVisuals();
+          updateSpeedMeterUI();
+
+          lastFrameTime = timestamp;
+        }
+
+        timerId = requestAnimationFrame(gameLoop);
+      }
+
+      function updateSpeedMeterUI() {
+        currentDelayVal.textContent = `${currentStepDelay} ms`;
+        const barPercent = Math.min(100, Math.max(5, ((currentStepDelay - 10) / 30) * 100));
+        meterBarFill.style.width = `${barPercent}%`;
+      }
+
+      function stopRoulette() {
+        if (targetSet.size === 0) return; // Guard clause
+
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+
+        if (!isRunning) {
+          isRunning = true;
+          stopBtn.textContent = 'STOP !';
+          stopBtn.className = 'btn-action btn-stop';
+          statusBanner.className = 'status-banner';
+          statusBanner.textContent = '轉動中... 隨時點擊 STOP 按鈕！';
+          startBGM();
+          lastFrameTime = 0;
+          timerId = requestAnimationFrame(gameLoop);
+          return;
+        }
+
+        cancelAnimationFrame(timerId);
+        stopBGM();
+        isRunning = false;
+
+        playsCount++;
+        playsVal.textContent = playsCount;
+
+        stopBtn.textContent = 'CONTINUE (繼續)';
+        stopBtn.className = 'btn-action btn-continue';
+
+        evaluateHitResult();
+      }
+
+      function evaluateHitResult() {
+        const isTargetHit = targetSet.has(currentIndex);
+
+        if (isTargetHit) {
+          capturedSet.add(currentIndex);
+          playSound('win');
+          updateRingVisuals();
+
+          if (capturedSet.size === targetSet.size) {
+            statusBanner.className = 'status-banner win';
+            statusBanner.textContent = `🎉 太厲害了！已擊中所有 ${targetSet.size} 個目標格子！`;
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+          } else {
+            statusBanner.className = 'status-banner win';
+            statusBanner.textContent = `🎯 成功踩中第 ${currentIndex + 1} 格！(進度: ${capturedSet.size}/${targetSet.size})`;
+            confetti({ particleCount: 40, spread: 50, origin: { y: 0.7 } });
+          }
+        } else {
+          playSound('miss');
+          statusBanner.className = 'status-banner miss';
+          statusBanner.textContent = `❌ 停在第 ${currentIndex + 1} 格 (未命中目標)，再試一次！`;
+        }
+      }
+
+      function resetGameSettings() {
+        cancelAnimationFrame(timerId);
+        stopBGM();
+        isRunning = false;
+
+        playsCount = 0;
+        playsVal.textContent = '0';
+        currentIndex = 0;
+        capturedSet.clear();
+
+        targetSet.clear();
+        [4, 6, 8, 10, 12].forEach(idx => targetSet.add(idx));
+
+        baseSpeed = 30;
+        baseSpeedSlider.value = 30;
+        baseSpeedVal.textContent = '30 ms';
+
+        fluctuationAmp = 0;
+        fluctAmpSlider.value = 0;
+        fluctAmpVal.textContent = '0 %';
+
+        masterVolume = 0.5;
+        masterVolSlider.value = 50;
+        masterVolVal.textContent = '50 %';
+
+        currentStepDelay = 30;
+        currentLapFactor = 0;
+
+        stopBtn.textContent = 'START !';
+        stopBtn.className = 'btn-action btn-continue';
+
+        initRing();
+        statusBanner.className = 'status-banner';
+        statusBanner.textContent = '已重置所有參數與目標！點擊 START 開始遊戲！';
+      }
+
+      stopBtn.addEventListener('click', stopRoulette);
+      resetBtn.addEventListener('click', resetGameSettings);
+
+      window.addEventListener('keydown', (e) => {
+        if ((e.code === 'Space' || e.code === 'Enter') && targetSet.size > 0) {
+          e.preventDefault();
+          stopRoulette();
+        }
+      });
+
+      baseSpeedSlider.addEventListener('input', (e) => {
+        baseSpeed = parseInt(e.target.value, 10);
+        baseSpeedVal.textContent = `${baseSpeed} ms`;
+      });
+
+      fluctAmpSlider.addEventListener('input', (e) => {
+        fluctuationAmp = parseInt(e.target.value, 10);
+        fluctAmpVal.textContent = `${fluctuationAmp} %`;
+      });
+
+      masterVolSlider.addEventListener('input', (e) => {
+        masterVolume = parseInt(e.target.value, 10) / 100.0;
+        masterVolVal.textContent = `${e.target.value} %`;
+      });
+
+      initRing();
+    });
+  </script>
+</body>
+</html>
