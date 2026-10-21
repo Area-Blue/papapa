@@ -2,13 +2,13 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Cyberpunk Arcade Neon Roulette</title>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
     :root {
       --bg-dark: #0a0b10;
-      --panel-bg: rgba(18, 22, 36, 0.85);
+      --panel-bg: rgba(18, 22, 36, 0.90);
       --neon-cyan: #00f0ff;
       --neon-pink: #ff007f;
       --neon-gold: #ffd700;
@@ -22,6 +22,8 @@
       margin: 0;
       padding: 0;
       user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
     }
 
     body {
@@ -36,49 +38,53 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 15px;
       overflow-x: hidden;
     }
 
+    /* RWD Game Wrapper */
     .game-wrapper {
       display: flex;
       flex-direction: row;
-      gap: 30px;
-      max-width: 1200px;
+      gap: 20px;
+      max-width: 1100px;
       width: 100%;
       align-items: flex-start;
       justify-content: center;
     }
 
-    @media (max-width: 950px) {
+    /* Tablet and Mobile Layout: Stack vertically */
+    @media (max-width: 900px) {
       .game-wrapper {
         flex-direction: column;
         align-items: center;
+        gap: 15px;
       }
     }
 
     .arcade-machine {
       background: var(--panel-bg);
       border: 2px solid rgba(0, 240, 255, 0.3);
-      border-radius: 24px;
-      box-shadow: 0 0 30px rgba(0, 240, 255, 0.15), inset 0 0 20px rgba(0, 0, 0, 0.8);
+      border-radius: 20px;
+      box-shadow: 0 0 25px rgba(0, 240, 255, 0.15), inset 0 0 20px rgba(0, 0, 0, 0.8);
       backdrop-filter: blur(12px);
-      padding: 25px;
+      padding: 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      width: 480px;
+      width: 100%;
+      max-width: 440px;
       position: relative;
     }
 
     .machine-header {
       text-align: center;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
       width: 100%;
     }
 
     .machine-title {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 900;
       letter-spacing: 2px;
       background: linear-gradient(135deg, #fff, var(--neon-cyan));
@@ -89,10 +95,10 @@
     }
 
     .machine-subtitle {
-      font-size: 12px;
+      font-size: 11px;
       color: #8a99ad;
       margin-top: 4px;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
     }
 
     .stats-bar {
@@ -102,9 +108,9 @@
       width: 100%;
       background: rgba(0, 0, 0, 0.4);
       border: 1px solid rgba(0, 240, 255, 0.2);
-      border-radius: 12px;
-      padding: 8px 16px;
-      margin-bottom: 15px;
+      border-radius: 10px;
+      padding: 6px 12px;
+      margin-bottom: 12px;
     }
 
     .stat-box {
@@ -112,44 +118,44 @@
     }
 
     .stat-label {
-      font-size: 11px;
+      font-size: 10px;
       color: #8a99ad;
       text-transform: uppercase;
       letter-spacing: 1px;
     }
 
     .stat-value {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 800;
       color: var(--neon-gold);
     }
 
-    /* Stage Container for Slices Wheel */
+    /* RWD Stage Container */
     .stage-container {
       position: relative;
-      width: 380px;
-      height: 380px;
+      width: 100%;
+      max-width: 350px;
+      aspect-ratio: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
     }
 
-    /* SVG Wheel Container */
     .wheel-svg-container {
-      width: 360px;
-      height: 360px;
+      width: 100%;
+      height: 100%;
       border-radius: 50%;
       box-shadow: 0 0 25px rgba(0, 0, 0, 0.9), 0 0 15px rgba(0, 240, 255, 0.2);
       position: relative;
     }
 
-    /* SVG Slice Styles (Option A: Tight-fitting Slices) */
     .wheel-slice {
       fill: rgba(20, 25, 42, 0.85);
       stroke: rgba(0, 240, 255, 0.25);
       stroke-width: 1.5;
       cursor: pointer;
+      touch-action: manipulation;
       transition: fill 0.15s ease, filter 0.15s ease;
     }
 
@@ -203,16 +209,10 @@
       font-size: 14px;
     }
 
-    .slice-icon {
-      font-size: 10px;
-      pointer-events: none;
-    }
-
-    /* Center Decorative Core */
     .center-hub {
       position: absolute;
-      width: 130px;
-      height: 130px;
+      width: 32%;
+      height: 32%;
       border-radius: 50%;
       background: radial-gradient(circle, #121624 0%, #080a10 100%);
       border: 2px solid var(--neon-cyan);
@@ -227,31 +227,32 @@
 
     .center-hub-ring {
       position: absolute;
-      width: 100px;
-      height: 100px;
+      width: 75%;
+      height: 75%;
       border-radius: 50%;
       border: 1px dashed rgba(255, 255, 255, 0.2);
     }
 
     .arcade-controls {
       display: flex;
-      gap: 15px;
+      gap: 12px;
       width: 100%;
       justify-content: center;
     }
 
     .btn-action {
       flex: 1;
-      padding: 16px 10px;
+      padding: 14px 10px;
       border: none;
-      border-radius: 14px;
-      font-size: 16px;
+      border-radius: 12px;
+      font-size: 15px;
       font-weight: 800;
       letter-spacing: 1px;
       cursor: pointer;
+      touch-action: manipulation;
       text-transform: uppercase;
       transition: all 0.1s ease;
-      box-shadow: 0 6px 0 rgba(0,0,0,0.5);
+      box-shadow: 0 5px 0 rgba(0,0,0,0.5);
       position: relative;
       top: 0;
       white-space: nowrap;
@@ -259,7 +260,7 @@
     }
 
     .btn-action:active:not(:disabled) {
-      top: 4px;
+      top: 3px;
       box-shadow: 0 2px 0 rgba(0,0,0,0.5);
     }
 
@@ -278,7 +279,7 @@
     }
 
     .btn-stop:hover:not(:disabled) {
-      box-shadow: 0 0 20px rgba(255, 0, 127, 0.6), 0 6px 0 rgba(0,0,0,0.5);
+      box-shadow: 0 0 20px rgba(255, 0, 127, 0.6), 0 5px 0 rgba(0,0,0,0.5);
     }
 
     .btn-continue {
@@ -288,7 +289,7 @@
     }
 
     .btn-continue:hover:not(:disabled) {
-      box-shadow: 0 0 20px rgba(0, 240, 255, 0.6), 0 6px 0 rgba(0,0,0,0.5);
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.6), 0 5px 0 rgba(0,0,0,0.5);
     }
 
     .btn-reset {
@@ -298,27 +299,28 @@
     }
 
     .btn-reset:hover {
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.2), 0 6px 0 rgba(0,0,0,0.5);
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.2), 0 5px 0 rgba(0,0,0,0.5);
     }
 
     .settings-panel {
       background: var(--panel-bg);
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 20px;
-      padding: 22px;
-      width: 380px;
+      padding: 20px;
+      width: 100%;
+      max-width: 400px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
     }
 
     .panel-title {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 700;
       color: var(--neon-cyan);
       border-bottom: 1px solid rgba(0, 240, 255, 0.2);
-      padding-bottom: 8px;
+      padding-bottom: 6px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -327,11 +329,11 @@
     .control-group {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 5px;
     }
 
     .control-label {
-      font-size: 12px;
+      font-size: 11px;
       color: #a0aec0;
       display: flex;
       justify-content: space-between;
@@ -346,6 +348,7 @@
       width: 100%;
       accent-color: var(--neon-cyan);
       cursor: pointer;
+      height: 6px;
     }
 
     .target-grid {
@@ -364,6 +367,7 @@
       font-size: 11px;
       font-weight: bold;
       cursor: pointer;
+      touch-action: manipulation;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -379,8 +383,8 @@
     .quick-preset-row {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 6px;
-      margin-top: 6px;
+      gap: 5px;
+      margin-top: 5px;
     }
 
     .preset-btn {
@@ -391,6 +395,7 @@
       border-radius: 6px;
       font-size: 10px;
       cursor: pointer;
+      touch-action: manipulation;
       font-weight: 600;
       transition: background 0.15s;
     }
@@ -410,21 +415,21 @@
 
     .speed-meter-box {
       background: rgba(0,0,0,0.4);
-      border-radius: 10px;
-      padding: 10px 14px;
+      border-radius: 8px;
+      padding: 8px 12px;
       border: 1px solid rgba(0, 240, 255, 0.15);
     }
 
     .meter-label {
-      font-size: 11px;
+      font-size: 10px;
       color: #8a99ad;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
 
     .meter-bar-bg {
-      height: 8px;
+      height: 6px;
       background: #1e2638;
-      border-radius: 4px;
+      border-radius: 3px;
       overflow: hidden;
     }
 
@@ -437,15 +442,15 @@
 
     .status-banner {
       width: 100%;
-      padding: 10px;
-      border-radius: 10px;
+      padding: 8px 12px;
+      border-radius: 8px;
       text-align: center;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: bold;
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.1);
       color: #e2e8f0;
-      min-height: 42px;
+      min-height: 38px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -470,11 +475,11 @@
     }
 
     .captured-badge {
-      font-size: 11px;
+      font-size: 10px;
       color: var(--neon-green);
       font-weight: bold;
       background: rgba(0, 255, 102, 0.15);
-      padding: 2px 6px;
+      padding: 2px 5px;
       border-radius: 4px;
       border: 1px solid rgba(0, 255, 102, 0.3);
     }
@@ -504,7 +509,7 @@
 
         <!-- Wheel SVG Slices Container (Option A) -->
         <div class="wheel-svg-container">
-          <svg id="wheelSvg" viewBox="0 0 360 360" width="360" height="360"></svg>
+          <svg id="wheelSvg" viewBox="0 0 360 360" width="100%" height="100%"></svg>
         </div>
       </div>
 
@@ -512,7 +517,7 @@
         點擊 START 按鈕或按下空白鍵 (Space) 開始遊戲！
       </div>
 
-      <div style="height: 15px;"></div>
+      <div style="height: 12px;"></div>
 
       <div class="arcade-controls">
         <button class="btn-action btn-continue" id="stopBtn">START !</button>
@@ -597,460 +602,4 @@
       let capturedSet = new Set();
 
       let baseSpeed = 30;           // Range: 10ms to 40ms (Default: 30ms)
-      let fluctuationAmp = 0;       // Range: 0% to 100% (Default: 0%)
-      let currentStepDelay = 30;
-      let currentLapFactor = 0;     // Fixed speed factor applied for each full lap
-      let lastFrameTime = 0;
-
-      let masterVolume = 0.5;
-
-      const wheelSvg = document.getElementById('wheelSvg');
-      const targetGrid = document.getElementById('targetGrid');
-      const stopBtn = document.getElementById('stopBtn');
-      const resetBtn = document.getElementById('resetBtn');
-      const statusBanner = document.getElementById('statusBanner');
-      const playsVal = document.getElementById('playsVal');
-      const baseSpeedSlider = document.getElementById('baseSpeedSlider');
-      const baseSpeedVal = document.getElementById('baseSpeedVal');
-      const fluctAmpSlider = document.getElementById('fluctAmpSlider');
-      const fluctAmpVal = document.getElementById('fluctAmpVal');
-      const masterVolSlider = document.getElementById('masterVolSlider');
-      const masterVolVal = document.getElementById('masterVolVal');
-      const currentDelayVal = document.getElementById('currentDelayVal');
-      const meterBarFill = document.getElementById('meterBarFill');
-      const targetCountText = document.getElementById('targetCountText');
-      const capturedCountTag = document.getElementById('capturedCountTag');
-
-      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      let bgmStepIndex = 0;
-      let nextNoteTime = 0;
-      let bgmTimerId = null;
-
-      function playSound(type) {
-        if (audioCtx.state === 'suspended') {
-          audioCtx.resume();
-        }
-        const now = audioCtx.currentTime;
-        const gainNode = audioCtx.createGain();
-        gainNode.connect(audioCtx.destination);
-
-        if (type === 'tick') {
-          const osc = audioCtx.createOscillator();
-          osc.connect(gainNode);
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(440, now);
-          osc.frequency.exponentialRampToValueAtTime(880, now + 0.02);
-          
-          gainNode.gain.setValueAtTime(0.25 * masterVolume, now);
-          gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.02);
-          
-          osc.start(now);
-          osc.stop(now + 0.02);
-        } else if (type === 'win') {
-          const osc = audioCtx.createOscillator();
-          osc.connect(gainNode);
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(523.25, now);
-          osc.frequency.setValueAtTime(659.25, now + 0.08);
-          osc.frequency.setValueAtTime(783.99, now + 0.16);
-          osc.frequency.setValueAtTime(1046.50, now + 0.24);
-          
-          gainNode.gain.setValueAtTime(0.4 * masterVolume, now);
-          gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
-          
-          osc.start(now);
-          osc.stop(now + 0.5);
-        } else if (type === 'miss') {
-          const osc = audioCtx.createOscillator();
-          osc.connect(gainNode);
-          osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(220, now);
-          osc.frequency.linearRampToValueAtTime(110, now + 0.15);
-          
-          gainNode.gain.setValueAtTime(0.3 * masterVolume, now);
-          gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
-          
-          osc.start(now);
-          osc.stop(now + 0.15);
-        }
-      }
-
-      function scheduleBGM() {
-        if (!isRunning) return;
-        const now = audioCtx.currentTime;
-
-        if (nextNoteTime <= now + 0.1) {
-          const bassNotes = [110, 110, 130.81, 110, 146.83, 110, 130.81, 98.00];
-          const freq = bassNotes[bgmStepIndex % bassNotes.length];
-
-          const osc = audioCtx.createOscillator();
-          const gain = audioCtx.createGain();
-          const filter = audioCtx.createBiquadFilter();
-
-          osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(freq, nextNoteTime);
-
-          filter.type = 'lowpass';
-          filter.frequency.setValueAtTime(600, nextNoteTime);
-
-          gain.gain.setValueAtTime(0.12 * masterVolume, nextNoteTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, nextNoteTime + 0.1);
-
-          osc.connect(filter);
-          filter.connect(gain);
-          gain.connect(audioCtx.destination);
-
-          osc.start(nextNoteTime);
-          osc.stop(nextNoteTime + 0.1);
-
-          if (bgmStepIndex % 2 === 1) {
-            const hatOsc = audioCtx.createOscillator();
-            const hatGain = audioCtx.createGain();
-            hatOsc.type = 'square';
-            hatOsc.frequency.setValueAtTime(7000, nextNoteTime);
-            hatGain.gain.setValueAtTime(0.06 * masterVolume, nextNoteTime);
-            hatGain.gain.exponentialRampToValueAtTime(0.001, nextNoteTime + 0.03);
-            hatOsc.connect(hatGain);
-            hatGain.connect(audioCtx.destination);
-            hatOsc.start(nextNoteTime);
-            hatOsc.stop(nextNoteTime + 0.03);
-          }
-
-          nextNoteTime += 0.12;
-          bgmStepIndex++;
-        }
-
-        bgmTimerId = setTimeout(scheduleBGM, 25);
-      }
-
-      function startBGM() {
-        if (audioCtx.state === 'suspended') {
-          audioCtx.resume();
-        }
-        bgmStepIndex = 0;
-        nextNoteTime = audioCtx.currentTime;
-        scheduleBGM();
-      }
-
-      function stopBGM() {
-        if (bgmTimerId) {
-          clearTimeout(bgmTimerId);
-          bgmTimerId = null;
-        }
-      }
-
-      // --- Draw Option A SVG Slices Wheel ---
-      function initWheelSvg() {
-        wheelSvg.innerHTML = '';
-        const cx = 180, cy = 180;
-        const outerR = 175;
-        const innerR = 65; // Matches center hub
-        const angleStep = 360 / TOTAL_CELLS;
-
-        for (let i = 0; i < TOTAL_CELLS; i++) {
-          const startAngle = i * angleStep - 90;
-          const endAngle = (i + 1) * angleStep - 90;
-
-          const startRad = (startAngle * Math.PI) / 180;
-          const endRad = (endAngle * Math.PI) / 180;
-
-          const x1 = cx + outerR * Math.cos(startRad);
-          const y1 = cy + outerR * Math.sin(startRad);
-          const x2 = cx + outerR * Math.cos(endRad);
-          const y2 = cy + outerR * Math.sin(endRad);
-
-          const x3 = cx + innerR * Math.cos(endRad);
-          const y3 = cy + innerR * Math.sin(endRad);
-          const x4 = cx + innerR * Math.cos(startRad);
-          const y4 = cy + innerR * Math.sin(startRad);
-
-          const pathData = `M ${x1} ${y1} A ${outerR} ${outerR} 0 0 1 ${x2} ${y2} L ${x3} ${y3} A ${innerR} ${innerR} 0 0 0 ${x4} ${y4} Z`;
-
-          const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-          path.setAttribute('d', pathData);
-          path.setAttribute('class', 'wheel-slice');
-          path.setAttribute('id', `slice-${i}`);
-          path.addEventListener('click', () => toggleTarget(i));
-
-          // Text & Icon Position
-          const midAngle = (startAngle + endAngle) / 2;
-          const midRad = (midAngle * Math.PI) / 180;
-          const textR = (outerR + innerR) / 2;
-          const tx = cx + textR * Math.cos(midRad);
-          const ty = cy + textR * Math.sin(midRad);
-
-          const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-          text.setAttribute('x', tx);
-          text.setAttribute('y', ty);
-          text.setAttribute('text-anchor', 'middle');
-          text.setAttribute('dominant-baseline', 'central');
-          text.setAttribute('class', 'slice-text');
-          text.setAttribute('id', `slice-text-${i}`);
-          text.textContent = i + 1;
-
-          wheelSvg.appendChild(path);
-          wheelSvg.appendChild(text);
-        }
-
-        initTargetGridUI();
-        updateWheelVisuals();
-      }
-
-      function initTargetGridUI() {
-        targetGrid.innerHTML = '';
-        for (let i = 0; i < TOTAL_CELLS; i++) {
-          const btn = document.createElement('button');
-          btn.className = 'target-btn';
-          btn.textContent = i + 1;
-          btn.id = `target-grid-btn-${i}`;
-          btn.addEventListener('click', () => toggleTarget(i));
-          targetGrid.appendChild(btn);
-        }
-      }
-
-      function toggleTarget(index) {
-        if (targetSet.has(index)) {
-          targetSet.delete(index);
-          capturedSet.delete(index);
-        } else {
-          targetSet.add(index);
-        }
-        updateWheelVisuals();
-      }
-
-      window.setPresetTargets = function(type) {
-        targetSet.clear();
-        capturedSet.clear();
-        if (type === 'default') {
-          [4, 6, 8, 10, 12].forEach(idx => targetSet.add(idx)); // 5, 7, 9, 11, 13
-        } else if (type === 'even') {
-          for (let i = 1; i < TOTAL_CELLS; i += 2) targetSet.add(i);
-        } else if (type === 'odd') {
-          for (let i = 0; i < TOTAL_CELLS; i += 2) targetSet.add(i);
-        } else if (type === 'corners') {
-          [0, 4, 8, 12].forEach(idx => targetSet.add(idx));
-        } else if (type === 'all') {
-          for (let i = 0; i < TOTAL_CELLS; i++) targetSet.add(i);
-        } else if (type === 'none') {
-          // Clear all targets
-        }
-        updateWheelVisuals();
-      };
-
-      function updateWheelVisuals() {
-        for (let i = 0; i < TOTAL_CELLS; i++) {
-          const slice = document.getElementById(`slice-${i}`);
-          const text = document.getElementById(`slice-text-${i}`);
-          const gridBtn = document.getElementById(`target-grid-btn-${i}`);
-
-          if (!slice || !text) continue;
-
-          slice.setAttribute('class', 'wheel-slice');
-          text.setAttribute('class', 'slice-text');
-          if (gridBtn) gridBtn.classList.remove('selected');
-
-          let label = `${i + 1}`;
-
-          if (targetSet.has(i)) {
-            slice.classList.add('is-target');
-            text.classList.add('is-target');
-            if (gridBtn) gridBtn.classList.add('selected');
-            label = `${i + 1}🎯`;
-          }
-
-          if (capturedSet.has(i)) {
-            slice.classList.add('is-captured');
-            text.classList.add('is-captured');
-            label = `${i + 1}✓`;
-          }
-
-          if (i === currentIndex) {
-            slice.classList.add('is-active');
-            text.classList.add('is-active');
-          }
-
-          text.textContent = label;
-        }
-
-        targetCountText.textContent = `已選 ${targetSet.size} 格`;
-        capturedCountTag.textContent = `進度: ${capturedSet.size} / ${targetSet.size}`;
-
-        // Validation Check: At least 1 target must be selected to play
-        if (targetSet.size === 0) {
-          stopBtn.disabled = true;
-          if (!isRunning) {
-            statusBanner.className = 'status-banner warning';
-            statusBanner.textContent = '⚠️ 請至少選擇 1 個目標格子才可開始遊戲！';
-          }
-        } else {
-          stopBtn.disabled = false;
-          if (!isRunning && statusBanner.classList.contains('warning')) {
-            statusBanner.className = 'status-banner';
-            statusBanner.textContent = '點擊 START 按鈕或按下空白鍵 (Space) 開始遊戲！';
-          }
-        }
-      }
-
-      function calculateNextDelay() {
-        if (fluctuationAmp === 0) {
-          return baseSpeed;
-        }
-
-        if (currentIndex === 0 || currentLapFactor === 0) {
-          currentLapFactor = (Math.random() * 2.0) - 1.0; 
-        }
-
-        const ampFactor = fluctuationAmp / 100.0;
-        let calculatedDelay = baseSpeed * (1 + currentLapFactor * ampFactor);
-        
-        return Math.max(5, Math.round(calculatedDelay));
-      }
-
-      function gameLoop(timestamp) {
-        if (!isRunning) return;
-
-        if (!lastFrameTime) lastFrameTime = timestamp;
-        const elapsed = timestamp - lastFrameTime;
-
-        if (elapsed >= currentStepDelay) {
-          currentIndex = (currentIndex + 1) % TOTAL_CELLS;
-          playSound('tick');
-
-          currentStepDelay = calculateNextDelay();
-          updateWheelVisuals();
-          updateSpeedMeterUI();
-
-          lastFrameTime = timestamp;
-        }
-
-        timerId = requestAnimationFrame(gameLoop);
-      }
-
-      function updateSpeedMeterUI() {
-        currentDelayVal.textContent = `${currentStepDelay} ms`;
-        const barPercent = Math.min(100, Math.max(5, ((currentStepDelay - 10) / 30) * 100));
-        meterBarFill.style.width = `${barPercent}%`;
-      }
-
-      function stopRoulette() {
-        if (targetSet.size === 0) return;
-
-        if (audioCtx.state === 'suspended') {
-          audioCtx.resume();
-        }
-
-        if (!isRunning) {
-          isRunning = true;
-          stopBtn.textContent = 'STOP !';
-          stopBtn.className = 'btn-action btn-stop';
-          statusBanner.className = 'status-banner';
-          statusBanner.textContent = '轉動中... 隨時點擊 STOP 按鈕！';
-          startBGM();
-          lastFrameTime = 0;
-          timerId = requestAnimationFrame(gameLoop);
-          return;
-        }
-
-        cancelAnimationFrame(timerId);
-        stopBGM();
-        isRunning = false;
-
-        playsCount++;
-        playsVal.textContent = playsCount;
-
-        stopBtn.textContent = 'CONTINUE (繼續)';
-        stopBtn.className = 'btn-action btn-continue';
-
-        evaluateHitResult();
-      }
-
-      function evaluateHitResult() {
-        const isTargetHit = targetSet.has(currentIndex);
-
-        if (isTargetHit) {
-          capturedSet.add(currentIndex);
-          playSound('win');
-          updateWheelVisuals();
-
-          if (capturedSet.size === targetSet.size) {
-            statusBanner.className = 'status-banner win';
-            statusBanner.textContent = `🎉 太厲害了！已擊中所有 ${targetSet.size} 個目標格子！`;
-            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-          } else {
-            statusBanner.className = 'status-banner win';
-            statusBanner.textContent = `🎯 成功踩中第 ${currentIndex + 1} 格！(進度: ${capturedSet.size}/${targetSet.size})`;
-            confetti({ particleCount: 40, spread: 50, origin: { y: 0.7 } });
-          }
-        } else {
-          playSound('miss');
-          statusBanner.className = 'status-banner miss';
-          statusBanner.textContent = `❌ 停在第 ${currentIndex + 1} 格 (未命中目標)，再試一次！`;
-        }
-      }
-
-      function resetGameSettings() {
-        cancelAnimationFrame(timerId);
-        stopBGM();
-        isRunning = false;
-
-        playsCount = 0;
-        playsVal.textContent = '0';
-        currentIndex = 0;
-        capturedSet.clear();
-
-        targetSet.clear();
-        [4, 6, 8, 10, 12].forEach(idx => targetSet.add(idx));
-
-        baseSpeed = 30;
-        baseSpeedSlider.value = 30;
-        baseSpeedVal.textContent = '30 ms';
-
-        fluctuationAmp = 0;
-        fluctAmpSlider.value = 0;
-        fluctAmpVal.textContent = '0 %';
-
-        masterVolume = 0.5;
-        masterVolSlider.value = 50;
-        masterVolVal.textContent = '50 %';
-
-        currentStepDelay = 30;
-        currentLapFactor = 0;
-
-        stopBtn.textContent = 'START !';
-        stopBtn.className = 'btn-action btn-continue';
-
-        initWheelSvg();
-        statusBanner.className = 'status-banner';
-        statusBanner.textContent = '已重置所有參數與目標！點擊 START 開始遊戲！';
-      }
-
-      stopBtn.addEventListener('click', stopRoulette);
-      resetBtn.addEventListener('click', resetGameSettings);
-
-      window.addEventListener('keydown', (e) => {
-        if ((e.code === 'Space' || e.code === 'Enter') && targetSet.size > 0) {
-          e.preventDefault();
-          stopRoulette();
-        }
-      });
-
-      baseSpeedSlider.addEventListener('input', (e) => {
-        baseSpeed = parseInt(e.target.value, 10);
-        baseSpeedVal.textContent = `${baseSpeed} ms`;
-      });
-
-      fluctAmpSlider.addEventListener('input', (e) => {
-        fluctuationAmp = parseInt(e.target.value, 10);
-        fluctAmpVal.textContent = `${fluctuationAmp} %`;
-      });
-
-      masterVolSlider.addEventListener('input', (e) => {
-        masterVolume = parseInt(e.target.value, 10) / 100.0;
-        masterVolVal.textContent = `${e.target.value} %`;
-      });
-
-      initWheelSvg();
-    });
-  </script>
-</body>
-</html>
+      let fluctuationAmp = 0;       // Range: 0% to 1
